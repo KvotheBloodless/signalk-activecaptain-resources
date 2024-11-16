@@ -15,7 +15,16 @@
     "displayName": "Garmin Active Captain Resources"
   },
   "author": "Paul Willems",
-  "license": "ISC",
+  "license": "MIT",
+  "homepage": "https://github.com/KvotheBloodless/signalk-activecaptain-resources",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/KvotheBloodless/signalk-activecaptain-resources.git"
+  },
+  "bugs": {
+    "url": "https://github.com/KvotheBloodless/signalk-activecaptain-resources/issues",
+    "email": "paul.willems@gmail.com"
+  },
   "dependencies": {
     "request": "^2.88.2"
   }
