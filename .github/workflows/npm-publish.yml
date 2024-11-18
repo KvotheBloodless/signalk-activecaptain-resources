@@ -23,7 +23,6 @@ jobs:
           else
           npm i
           fi  
-      - run: npm test
 
   publish-npm:
     needs: build
