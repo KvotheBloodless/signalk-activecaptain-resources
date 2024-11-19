@@ -2,10 +2,10 @@
 
 <div align="center">
 
-[![Status](https://img.shields.io/badge/status-active-success.svg)]()
-[![GitHub Issues](https://img.shields.io/github/issues/kylelobo/The-Documentation-Compendium.svg)](https://github.com/KvotheBloodless/signalk-activecaptain-resources/issues)
-[![GitHub Pull Requests](https://img.shields.io/github/issues-pr/kylelobo/The-Documentation-Compendium.svg)](https://github.com/KvotheBloodless/signalk-activecaptain-resources/pulls)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](/LICENSE)
+[![Release](https://img.shields.io/github/v/release/KvotheBloodless/signalk-activecaptain-resources)]()
+[![GitHub Issues](https://img.shields.io/github/issues/KvotheBloodless/signalk-activecaptain-resources)]()
+[![GitHub Pull Requests](https://img.shields.io/github/issues-pr/KvotheBloodless/signalk-activecaptain-resources)]()
+[![License](https://img.shields.io/github/license/KvotheBloodless/signalk-activecaptain-resources)]()
 
 </div>
 
