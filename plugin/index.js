@@ -613,7 +613,7 @@ module.exports = function(app) {
 
   function initCustomResources() {
 
-    customResources = customResourcesTemplate;
+    customResources = structuredClone(customResourcesTemplate);
   }
 
   function initNoteResources() {
