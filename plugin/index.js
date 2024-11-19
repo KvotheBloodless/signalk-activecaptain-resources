@@ -23,7 +23,6 @@
  */
 
 const request = require('request')
-const poiKey = 'pointsOfInterest.activeCaptain'
 const userAgent = 'Signal K ActiveCaptain Plugin'
 
 const unknownId = '1e2bf981-4a24-4dce-8649-63ec18eb5aee'
@@ -479,7 +478,7 @@ module.exports = function (app) {
         'User-Agent': userAgent
       }
     }, function (error, response, data) {
-      if (!error && response.statusCode == 200) {
+      if (!error && response.statusCode === 200) {
         if (!data.pointOfInterest) {
           app.debug(`Cannot decode response for POI ${poi.id}: ${JSON.stringify(data)}`)
           return
@@ -492,7 +491,7 @@ module.exports = function (app) {
           for (const note of data.pointOfInterest.notes) {
             i++
 
-            if (i == 1) {
+            if (i === 1) {
               shortNotes = note.value
               // We don't want to trash SignalK with a ton of text
               const lengthLimit = 280
@@ -536,6 +535,7 @@ module.exports = function (app) {
 
   function retrievePois (radius, lat, lng) {
     initCustomResources()
+    initNoteResources()
 
     const url = 'https://activecaptain.garmin.com/community/api/v1/points-of-interest/bbox'
     // Calculate the coordinates of the "box" that we will use to retrieve the POIs
@@ -544,7 +544,6 @@ module.exports = function (app) {
     const seCoords = calculateNewPosition(lat, lng, 135, radius)
     request.post({
       url,
-      json: true,
       headers: {
         'User-Agent': userAgent
       },
@@ -557,12 +556,12 @@ module.exports = function (app) {
         zoomLevel: 17 // Get granular
       }
     }, function (error, response, data) {
-      if (!error && response.statusCode == 200) {
+      if (!error && response.statusCode === 200) {
         if (!data.pointsOfInterest) {
           return
         }
         data.pointsOfInterest.map(poiSummary => {
-          retrievePoiDetails(poiSummary)
+          return retrievePoiDetails(poiSummary)
         })
       } else {
         app.debug(`Error retrieving stations ${JSON.stringify(response)}`)
@@ -576,10 +575,6 @@ module.exports = function (app) {
 
   function initNoteResources () {
     noteResources = {}
-  }
-
-  function sleep (ms) {
-    return new Promise(resolve => setTimeout(resolve, ms))
   }
 
   return plugin
