@@ -2,10 +2,10 @@
 
 <div align="center">
 
-[![Release](https://img.shields.io/github/v/release/KvotheBloodless/signalk-activecaptain-resources)]()
-[![GitHub Issues](https://img.shields.io/github/issues/KvotheBloodless/signalk-activecaptain-resources)]()
-[![GitHub Pull Requests](https://img.shields.io/github/issues-pr/KvotheBloodless/signalk-activecaptain-resources)]()
-[![License](https://img.shields.io/github/license/KvotheBloodless/signalk-activecaptain-resources)]()
+[![Release](https://img.shields.io/github/v/release/KvotheBloodless/signalk-activecaptain-resources)](https://github.com/KvotheBloodless/signalk-activecaptain-resources/releases)
+[![GitHub Issues](https://img.shields.io/github/issues/KvotheBloodless/signalk-activecaptain-resources)](https://github.com/KvotheBloodless/signalk-activecaptain-resources/issues)
+[![GitHub Pull Requests](https://img.shields.io/github/issues-pr/KvotheBloodless/signalk-activecaptain-resources)](https://github.com/KvotheBloodless/signalk-activecaptain-resources/pulls)
+[![License](https://img.shields.io/github/license/KvotheBloodless/signalk-activecaptain-resources)](https://github.com/KvotheBloodless/signalk-activecaptain-resources?tab=MIT-1-ov-file#readme)
 
 </div>
 
