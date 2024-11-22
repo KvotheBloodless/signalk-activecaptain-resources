@@ -1,0 +1,2 @@
+<h1>{{pointOfInterest.name}}</h1>
+<label>Last Updated:</label><span>{{dateFormat pointOfInterest.dateLastModified format="llll"}}</span>

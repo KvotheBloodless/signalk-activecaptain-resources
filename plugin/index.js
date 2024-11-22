@@ -22,6 +22,8 @@
  * SOFTWARE.
  */
 
+var formatters = require('./formatters');
+
 const request = require('request')
 const userAgent = 'Signal K ActiveCaptain Plugin'
 
@@ -467,72 +469,6 @@ module.exports = function (app) {
     retrievePois(radius, lat, lng)
   }
 
-  function retrievePoiDetails (poi) {
-    app.debug(`Retrieving POI details for ID ${poi.id}`)
-
-    const url = `https://activecaptain.garmin.com/community/api/v1/points-of-interest/${poi.id}/summary`
-    request.get({
-      url,
-      json: true,
-      headers: {
-        'User-Agent': userAgent
-      }
-    }, function (error, response, data) {
-      if (!error && response.statusCode === 200) {
-        if (!data.pointOfInterest) {
-          app.debug(`Cannot decode response for POI ${poi.id}: ${JSON.stringify(data)}`)
-          return
-        }
-
-        let shortNotes = ''
-        let longNotes = ''
-        let i = 0
-        if (data.pointOfInterest.notes) {
-          for (const note of data.pointOfInterest.notes) {
-            i++
-
-            if (i === 1) {
-              shortNotes = note.value
-              // We don't want to trash SignalK with a ton of text
-              const lengthLimit = 280
-              if (shortNotes.length > lengthLimit) {
-                shortNotes = shortNotes.slice(0, lengthLimit) + '...'
-              }
-            }
-
-            longNotes += `Note ${i} - ${note.value}\n`
-          }
-        } else {
-          shortNotes = ''
-          longNotes = ''
-        }
-
-        noteResources[poi.id] = {
-          name: data.pointOfInterest.name,
-          description: longNotes,
-          position: data.pointOfInterest.mapLocation,
-          group: data.pointOfInterest.poiType,
-          url: `https://activecaptain.garmin.com/en-US/pois/${poi.id}`
-        }
-
-        customResources[ids[data.pointOfInterest.poiType]].values.features.push({
-          geometry: {
-            type: 'Point',
-            coordinates: [data.pointOfInterest.mapLocation.longitude, data.pointOfInterest.mapLocation.latitude]
-          },
-          properties: {
-            description: longNotes,
-            name: data.pointOfInterest.name
-          }
-        })
-
-        app.debug(`Published details for POI ${poi.id}`)
-      } else {
-        app.debug(`Error retrieving ${url}: ${JSON.stringify(response)}`)
-      }
-    })
-  }
-
   function retrievePois (radius, lat, lng) {
     initCustomResources()
     initNoteResources()
@@ -567,6 +503,107 @@ module.exports = function (app) {
         app.debug(`Error retrieving stations ${JSON.stringify(response)}`)
       }
     })
+  }
+
+  function retrievePoiDetails (poi) {
+    app.debug(`Retrieving POI details for ID ${poi.id}`)
+
+    const url = `https://activecaptain.garmin.com/community/api/v1/points-of-interest/${poi.id}/summary`
+    request.get({
+      url,
+      json: true,
+      headers: {
+        'User-Agent': userAgent
+      }
+    }, function (error, response, data) {
+      if (!error && response.statusCode === 200) {
+        if (!data.pointOfInterest) {
+          app.debug(`Cannot decode response for POI ${poi.id}: ${JSON.stringify(data)}`)
+          return
+        }
+
+        app.debug(`===> ${JSON.stringify(data)}`)
+
+        let shortNotes = ''
+        let longNotes = ''
+        let i = 0
+        if (data.pointOfInterest.notes) {
+          for (const note of data.pointOfInterest.notes) {
+            i++
+
+            if (i === 1) {
+              shortNotes = note.value
+              // We don't want to trash SignalK with a ton of text
+              const lengthLimit = 280
+              if (shortNotes.length > lengthLimit) {
+                shortNotes = shortNotes.slice(0, lengthLimit) + '...'
+              }
+            }
+
+            longNotes += `Note ${i} - ${note.value}\n`
+          }
+        } else {
+          shortNotes = ''
+          longNotes = ''
+        }
+
+        noteResources[poi.id] = {
+          name: data.pointOfInterest.name,
+          description: noteDescription(data.pointOfInterest),
+          position: data.pointOfInterest.mapLocation,
+          group: data.pointOfInterest.poiType,
+          url: `https://activecaptain.garmin.com/en-US/pois/${poi.id}`
+        }
+
+        customResources[ids[data.pointOfInterest.poiType]].values.features.push({
+          geometry: {
+            type: 'Point',
+            coordinates: [data.pointOfInterest.mapLocation.longitude, data.pointOfInterest.mapLocation.latitude]
+          },
+          properties: {
+            description: longNotes,
+            name: data.pointOfInterest.name
+          }
+        })
+
+        app.debug(`Published details for POI ${poi.id}`)
+      } else {
+        app.debug(`Error retrieving ${url}: ${JSON.stringify(response)}`)
+      }
+    })
+  }
+
+  function noteDescription(pointOfInterest) {
+    switch (pointOfInterest.poiType) {
+      case 'Unknown':
+        return formatters.unknown(pointOfInterest)
+      case 'Anchorage':
+        return formatters.anchorage(pointOfInterest)
+      case 'Hazard':
+        return formatters.hazard(pointOfInterest)
+      case 'Marina':
+        return formatters.marina(pointOfInterest)
+      case 'LocalKnowledge':
+        return formatters.localKnowledge(pointOfInterest)
+      case 'Navigational':
+        return formatters.navigational(pointOfInterest)
+      case 'BoatRamp':
+        return formatters.boatRamp(pointOfInterest)
+      case 'Business':
+        return formatters.business(pointOfInterest)
+      case 'Inlet':
+        return formatters.inlet(pointOfInterest)
+      case 'Lock':
+        return formatters.lock(pointOfInterest)
+      case 'Dam':
+        return formatters.dam(pointOfInterest)
+      case 'Ferry':
+        return formatters.ferry(pointOfInterest)
+      case 'Airport':
+        return formatters.airport(pointOfInterest)
+      case 'Bridge':
+        return formatters.bridge(pointOfInterest)
+    }
   }
 
   function initCustomResources () {
