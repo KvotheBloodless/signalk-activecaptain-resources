@@ -15,8 +15,6 @@
     <br> 
 </p>
 
-<a href="https://www.buymeacoffee.com/KvotheBloodless" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
-
 ## 📝 Table of Contents
 
 - [About](#about)
@@ -94,5 +92,6 @@ Finally, select the point of interest categories you would like to see displayed
 ## ✍️ Authors <a name = "authors"></a>
 
 - [@KvotheBloodless](https://github.com/KvotheBloodless) - Idea & Initial work
+<a href="https://www.buymeacoffee.com/KvotheBloodless" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
 
 See also the list of [contributors](https://github.com/KvotheBloodless/signalk-activecaptain-resources/graphs/contributors) who participated in this project.
