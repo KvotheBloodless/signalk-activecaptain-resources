@@ -1,0 +1,12 @@
+<hr/>
+<sup>last updated {{fromNow data.pointOfInterest.dateLastModified}}</sup><br/>
+
+{{#if data.pointOfInterest.notes}}
+<div>
+{{#each data.pointOfInterest.notes}}
+    <p>{{this.field}}: {{this.value}}</p>
+{{/each}}
+</div>
+{{/if}}
+
+{{#if data.reviewSummary}}{{> review data.reviewSummary id=data.pointOfInterest.id}}{{/if}}

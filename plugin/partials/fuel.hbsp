@@ -1,0 +1,16 @@
+<hr/>
+<div>
+    <h4>⛽ Fuel</h4>
+    {{#if diesel}}{{#if (eq diesel "No")}}✅{{else}}❌{{/if}} Diesel<br/>{{/if}}
+    {{#if ethanolFree}}{{#if (eq ethanolFree "Yes")}}✅{{else}}❌{{/if}} Ethanol free<br/>{{/if}}
+    {{#if gas}}{{#if (eq gas "Yes")}}✅{{else}}❌{{/if}} Unleaded<br/>{{/if}}
+    {{#if propane}}{{#if (eq propane "Yes")}}✅{{else}}❌{{/if}} Propane<br/>{{/if}}
+    {{#if electric}}{{#if (eq electric "Yes")}}✅{{else}}❌{{/if}} Electric chargingd<br/>{{/if}}
+<//div>
+{{#if notes}}
+<div>
+{{#each notes}}
+    <p>{{this.field}}: {{this.value}}</p>
+{{/each}}
+</div>
+{{/if}}

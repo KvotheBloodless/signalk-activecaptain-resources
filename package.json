@@ -1,6 +1,6 @@
 {
   "name": "signalk-activecaptain-resources",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Provides points of interest from Garmin Active Captain API as SignalK resources",
   "main": "plugin/index.js",
   "scripts": {
@@ -26,7 +26,12 @@
     "email": "paul.willems@gmail.com"
   },
   "dependencies": {
-    "request": "^2.88.2"
+    "@inventivetalent/loading-cache": "^0.7.1",
+    "@inventivetalent/time": "^1.0.3",
+    "axios": "^1.7.9",
+    "handlebars": "^4.7.8",
+    "helpers-for-handlebars": "^0.10.11",
+    "moment": "^2.30.1"
   },
   "devDependencies": {
     "eslint": "^8.57.1",
