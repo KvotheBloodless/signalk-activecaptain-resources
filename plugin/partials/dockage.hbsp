@@ -1,0 +1,19 @@
+<hr/>
+<div>
+    <h4>🅿️ Dockage</h4>
+    <p>
+        ✅ {{#if free}}Free{{else}}Paid{{/if}} docks
+    </p>
+    <p>
+        {{#if liveaboard}}{{#if (eq liveaboard "Yes")}}✅{{else}}❌{{/if}} Liveaboard<br/>{{/if}}
+        {{#if secureAccess}}{{#if (eq secureAccess "Yes")}}✅{{else}}❌{{/if}} Secure access<br/>{{/if}}
+        {{#if securityPatrol}}{{#if (eq securityPatrol "Yes")}}✅{{else}}❌{{/if}} Patrolled<br/>{{/if}}
+    </p>
+    {{#if notes}}
+    <div>
+        {{#each notes}}
+            <p>{{this.field}}: {{this.value}}</p>
+        {{/each}}
+    </div>
+    {{/if}}
+</div>

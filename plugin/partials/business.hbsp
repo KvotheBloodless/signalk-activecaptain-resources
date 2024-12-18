@@ -1,0 +1,16 @@
+<hr/>
+<div>
+    <h4>💵 Business</h4>
+    {{#if seasonal}}{{#if (eq seasonal "No")}}✅{{else}}❌{{/if}} Open year round<br/>{{/if}}
+    {{#if public}}{{#if (eq public "Yes")}}✅{{else}}❌{{/if}} Open to public<br/>{{/if}}
+    {{#if cash}}{{#if (eq cash "Yes")}}✅{{else}}❌{{/if}} Cash accepted<br/>{{/if}}
+    {{#if check}}{{#if (eq check "Yes")}}✅{{else}}❌{{/if}} Cheques accepted<br/>{{/if}}
+    {{#if credit}}{{#if (eq credit "Yes")}}✅{{else}}❌{{/if}} Cards accepted<br/>{{/if}}
+<//div>
+{{#if notes}}
+<div>
+{{#each notes}}
+    <p>{{this.field}}: {{this.value}}</p>
+{{/each}}
+</div>
+{{/if}}
