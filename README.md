@@ -54,40 +54,13 @@ Through the Signal K server Appstore, search for signalk-activecaptain-resources
 
 In the Signal K menu, head to Server -> Plugin Config, and find Garmin Active Captain Resources then enable the plugin. Default values are fine for now, so just click Submit.
 
-![Signal K Plugin Config](assets/config.png)
+<img width="996" alt="image" src="https://github.com/user-attachments/assets/1f3a0ebd-598d-40e7-847b-ae7ccb7c4607" />
 
 ## 🎈 Usage <a name="usage"></a>
 
-In the Signal K menu, head to Webapps and launch Freeboard-SK. In the Freeboard settings, navigate to Resources, and check the box next to "activecaptain".
+In the Signal K menu, head to Webapps and launch Freeboard-SK. Enjoy the new information.
 
-![Freeboard resources settings](assets/activecaptain.png)
-
-Next, click the layers button, select activecaptain, and 
-
-![Freeboard layers activecaptain](assets/layers.png)
-
-Finally, select the point of interest categories you would like to see displayed on the chart, and you will see coloured dots for the active captain data appear.
-
-![Freeboard Point of Interest](assets/poi.png)
-
-
-## Notes <a name = "notes"></a>
-
- This plugin uses the built-in resources feature of the Signal K server and the data gathered from ActiveCaptain is available to be consumed using the resources API. The resources published under the custom type 'activecaptain' are specifically intended for consumption by Freeboard, but by enabling the "notes" feature in the plugin configuration, data may also be consumed as standard 'note' type resources by other plugins/webapplications using the API.
-
- ```
- > curl -XGET "localhost:3000/signalk/v2/api/resources/notes/562951" | jq
-{
-  "name": "Pont de Fontaines (amont)",
-  "description": "Note 1 - Above and below bridge, bollards on right bank. Rubbish bins and tables.\n",
-  "position": {
-    "latitude": 46.85870176208298,
-    "longitude": 4.797202907502652
-  },
-  "group": "Anchorage",
-  "url": "https://activecaptain.garmin.com/en-US/pois/562951"
-}
- ```
+<img width="652" alt="image" src="https://github.com/user-attachments/assets/a0a83f64-b853-4381-9b5b-5434605d5eee" />
 
 ## ✍️ Authors <a name = "authors"></a>
 
