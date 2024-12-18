@@ -1,0 +1,25 @@
+<hr/>
+<div>
+    <h4>🏨 Amenities</h4>
+    {{#if bar}}{{#if (eq bar "Yes")}}✅{{else}}❌{{/if}} Bar<br/>{{/if}}
+    {{#if cellReception}}{{#if (eq cellReception "Yes")}}✅{{else}}❌{{/if}} Cell reception<br/>{{/if}}
+    {{#if boatRamp}}{{#if (eq boatRamp "Yes")}}✅{{else}}❌{{/if}} Boat ramp<br/>{{/if}}
+    {{#if laundry}}{{#if (eq laundry "Yes")}}✅{{else}}❌{{/if}} Laundry<br/>{{/if}}
+    {{#if courtesyCar}}{{#if (eq courtesyCar "Yes")}}✅{{else}}❌{{/if}} Courtesy car<br/>{{/if}}
+    {{#if pets}}{{#if (eq pets "Yes")}}✅{{else}}❌{{/if}} Pets allowed<br/>{{/if}}
+    {{#if lodging}}{{#if (eq lodging "Yes")}}✅{{else}}❌{{/if}} Lodging<br/>{{/if}}
+    {{#if restroom}}{{#if (eq restroom "Yes")}}✅{{else}}❌{{/if}} Restrooms<br/>{{/if}}
+    {{#if restaurant}}{{#if (eq restaurant "Yes")}}✅{{else}}❌{{/if}} Restaurant<br/>{{/if}}
+    {{#if transportation}}{{#if (eq transportation "Yes")}}✅{{else}}❌{{/if}} Transportation<br/>{{/if}}
+    {{#if shower}}{{#if (eq shower "Yes")}}✅{{else}}❌{{/if}} Showers<br/>{{/if}}
+    {{#if water}}{{#if (eq water "Yes")}}✅{{else}}❌{{/if}} Water<br/>{{/if}}
+    {{#if trash}}{{#if (eq trash "Yes")}}✅{{else}}❌{{/if}} Rubbish disposal<br/>{{/if}}
+    {{#if wifi}}{{#if (eq wifi "Yes")}}✅{{else}}❌{{/if}} Wifi<br/>{{/if}}
+</div>
+{{#if notes}}
+<div>
+{{#each notes}}
+    <p>{{this.field}}: {{this.value}}</p>
+{{/each}}
+</div>
+{{/if}}
