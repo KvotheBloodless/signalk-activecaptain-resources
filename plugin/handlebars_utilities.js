@@ -33,6 +33,7 @@ const UNKNOWN = 'Unknown'
 const partialsDir = './node_modules/signalk-activecaptain-resources/plugin/partials/'
 
 handlebars.registerPartial('header', fs.readFileSync(`${partialsDir}/header.hbsp`, 'utf-8'))
+handlebars.registerPartial('footer', fs.readFileSync(`${partialsDir}/footer.hbsp`, 'utf-8'))
 handlebars.registerPartial('business', fs.readFileSync(`${partialsDir}/business.hbsp`, 'utf-8'))
 handlebars.registerPartial('dockage', fs.readFileSync(`${partialsDir}/dockage.hbsp`, 'utf-8'))
 handlebars.registerPartial('fuel', fs.readFileSync(`${partialsDir}/fuel.hbsp`, 'utf-8'))
