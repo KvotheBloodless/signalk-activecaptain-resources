@@ -40,9 +40,7 @@ module.exports = function (app) {
   plugin.start = function (options) {
     handlebarsUtilities.helpers()
 
-    if (options.includeBerths) {
-      setupForPointsOfInterest(options.cachingDurationMinutes)
-    }
+    setupForPointsOfInterest(options.cachingDurationMinutes)
 
     registerAsNoteResourcesProvider()
   }
