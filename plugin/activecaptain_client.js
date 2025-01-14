@@ -28,29 +28,31 @@ const baseUrl = 'https://activecaptain.garmin.com'
 const userAgent = 'Signal K Active Captain Plugin'
 
 axios.interceptors.request.use(request => {
-  // console.log('Starting Request', JSON.stringify(request, null, 2))
+  console.log('Starting Request', JSON.stringify(request, null, 2))
   return request
 }, error => {
   Promise.reject(error)
 })
 
 axios.interceptors.response.use(response => {
-  // console.log('Received Response', JSON.stringify(response.data, null, 2))
+  console.log('Received Response', JSON.stringify(response.data, null, 2))
   return response
 }, error => {
   Promise.reject(error)
 })
 
 module.exports = {
-  listPointsOfInterest: function (app, x1, y1, x2, y2) {
+  listPointsOfInterest: function (app, x1, y1, x2, y2, extraParams) {
+    // extraParams note: Expects an array of strings called poiTypes
     const url = `${baseUrl}/community/api/v1/points-of-interest/bbox`
 
     return axios.post(url, {
+      // poiTypes: extraParams.poiTypes.join(','), // TODO: Figure out why this does not work. According to the doco, it should.
       north: y1,
       west: x1,
       south: y2,
       east: x2,
-      zoomLevel: 17
+      zoomLevel: 20 // We request at the highest zoom level to prevent the API grouping POIs
     }, {
       headers: {
         'User-Agent': userAgent,

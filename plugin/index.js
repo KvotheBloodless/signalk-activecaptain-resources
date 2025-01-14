@@ -23,7 +23,7 @@
   */
 
 const client = require('./activecaptain_client')
-const handlebarsUtilities = require('./handlebars_utilities')
+const formatterUtilities = require('./formatter_utilities')
 const positionUtils = require('./position_utilities')
 const loadingCache = require('@inventivetalent/loading-cache')
 const time = require('@inventivetalent/time')
@@ -38,9 +38,51 @@ module.exports = function (app) {
   const sourceConfig = new Map()
 
   plugin.start = function (options) {
-    handlebarsUtilities.helpers()
+    formatterUtilities.helpers()
 
-    setupForPointsOfInterest(options.cachingDurationMinutes)
+    const poiTypes = []
+
+    if (options.includeAnchorage) {
+      poiTypes.push('anchorage')
+    }
+    if (options.includeHazard) {
+      poiTypes.push('hazard')
+    }
+    if (options.includeMarina) {
+      poiTypes.push('marina')
+    }
+    if (options.includeLocalKnowledge) {
+      poiTypes.push('localKnowledge')
+    }
+    if (options.includeNavigational) {
+      poiTypes.push('navigational')
+    }
+    if (options.includeBoatRamp) {
+      poiTypes.push('boatRamp')
+    }
+    if (options.includeBusiness) {
+      poiTypes.push('business')
+    }
+    if (options.includeInlet) {
+      poiTypes.push('inlet')
+    }
+    if (options.includeLock) {
+      poiTypes.push('lock')
+    }
+    if (options.includeDam) {
+      poiTypes.push('dam')
+    }
+    if (options.includeFerry) {
+      poiTypes.push('ferry')
+    }
+    if (options.includeAirport) {
+      poiTypes.push('airport')
+    }
+    if (options.includeBridge) {
+      poiTypes.push('bridge')
+    }
+
+    setupForPointsOfInterest(poiTypes, options.cachingDurationMinutes)
 
     registerAsNoteResourcesProvider()
   }
@@ -57,9 +99,74 @@ module.exports = function (app) {
     type: 'object',
     required: ['cachingDurationMinutes'],
     properties: {
+      includeAnchorage: {
+        type: 'boolean',
+        title: 'Include anchorages',
+        default: true
+      },
+      includeHazard: {
+        type: 'boolean',
+        title: 'Include hazards',
+        default: true
+      },
+      includeMarina: {
+        type: 'boolean',
+        title: 'Include marinas',
+        default: true
+      },
+      includeLocalKnowledge: {
+        type: 'boolean',
+        title: 'Include local knowledge',
+        default: true
+      },
+      includeNavigational: {
+        type: 'boolean',
+        title: 'Include navigational',
+        default: true
+      },
+      includeBoatRamp: {
+        type: 'boolean',
+        title: 'Include boat ramps',
+        default: true
+      },
+      includeBusiness: {
+        type: 'boolean',
+        title: 'Include businesses',
+        default: true
+      },
+      includeInlet: {
+        type: 'boolean',
+        title: 'Include inlets',
+        default: true
+      },
+      includeLock: {
+        type: 'boolean',
+        title: 'Include locks',
+        default: true
+      },
+      includeDam: {
+        type: 'boolean',
+        title: 'Include dams',
+        default: true
+      },
+      includeFerry: {
+        type: 'boolean',
+        title: 'Include ferries',
+        default: true
+      },
+      includeAirport: {
+        type: 'boolean',
+        title: 'Include airports',
+        default: true
+      },
+      includeBridge: {
+        type: 'boolean',
+        title: 'Include bridges',
+        default: true
+      },
       cachingDurationMinutes: {
         type: 'number',
-        title: 'How long to cache data from Active Captain in minutes (longer = less data trafic; shorter = more up to date data)',
+        title: 'How longer to cache data from Active Captain in minutes (longer = less data trafic; shorter = more up to date data)',
         default: 60
       }
     }
@@ -79,14 +186,13 @@ module.exports = function (app) {
               const promises = []
 
               for (const struct of sourceConfig.values()) {
-                const promise = struct.listMethod(app, bbox[0], bbox[1], bbox[2], bbox[3])
+                const promise = struct.listMethod(app, bbox[0], bbox[1], bbox[2], bbox[3], struct.extraListMethodParams)
                   .then(entities => {
                     return entities.map(entity => {
                       return {
                         id: entity.id,
                         name: entity.name,
                         position: entity.position,
-                        // group: entity.type,
                         url: `https://activecaptain.garmin.com/en-US/pois/${entity.id}`,
                         mimeType: 'text/plain',
                         properties: {
@@ -133,7 +239,7 @@ module.exports = function (app) {
 
             return Promise.any(promises).then(entity => {
               let description = ''
-              const formatterFunction = handlebarsUtilities[entity.pointOfInterest.poiType.toLowerCase()]
+              const formatterFunction = formatterUtilities[entity.pointOfInterest.poiType.toLowerCase()]
               if (typeof formatterFunction === 'function') {
                 try {
                   description = formatterFunction(entity)
@@ -145,17 +251,12 @@ module.exports = function (app) {
               return {
                 name: entity.pointOfInterest.name,
                 description,
-                position: {
-                  longitude: entity.pointOfInterest.mapLocation.longitude,
-                  latitude: entity.pointOfInterest.mapLocation.latitude
-                },
                 url: `https://activecaptain.garmin.com/en-US/pois/${id}`,
                 mimeType: 'text/plain',
                 properties: {
                   readOnly: true,
                   skIcon: entity.pointOfInterest.poiType.toLowerCase()
                 },
-                timestamp: entity.pointOfInterest.dateLastModified,
                 $source: plugin.id
               }
             }, error => {
@@ -176,7 +277,7 @@ module.exports = function (app) {
     }
   }
 
-  function setupForPointsOfInterest (cachingDurationMinutes) {
+  function setupForPointsOfInterest (poiTypes, cachingDurationMinutes) {
     sourceConfig.set('PointsOfInterest', {
       detailsCache: loadingCache.Caches.builder().expireAfterWrite(time.Time.minutes(cachingDurationMinutes)).buildAsync(
         id => {
@@ -190,7 +291,10 @@ module.exports = function (app) {
             })
         }
       ),
-      listMethod: client.listPointsOfInterest
+      listMethod: client.listPointsOfInterest,
+      extraListMethodParams: {
+        poiTypes
+      }
     })
   }
 
