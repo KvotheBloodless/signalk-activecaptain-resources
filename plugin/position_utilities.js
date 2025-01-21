@@ -23,6 +23,12 @@
  */
 
 module.exports = {
+  geoboundsToBbox: function(geobounds) {
+    const nwCoords = geobounds[1]
+    const seCoords = geobounds[3]
+
+    return [nwCoords[0], nwCoords[1], seCoords[0], seCoords[1]]
+  },
   positionToBbox: function (position, distanceMeters) {
     const nwCoords = calculateNewPosition(position[0], position[1], -45, distanceMeters / 1000)
     const seCoords = calculateNewPosition(position[0], position[1], 135, distanceMeters / 1000)

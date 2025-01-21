@@ -163,7 +163,12 @@ module.exports = function (app) {
             app.debug(`Incoming request to list note resources - query: ${JSON.stringify(query)}`)
 
             if (query.position != null && query.distance != null) {
-              const bbox = positionUtils.positionToBbox(query.position, query.distance)
+              let bbox
+              if (query.geobounds) {
+                bbox = positionUtils.geoboundsToBbox(query.geobounds)
+              } else {
+                bbox = positionUtils.positionToBbox(query.position, query.distance)
+              }
 
               const promises = []
 
