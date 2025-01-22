@@ -42,7 +42,7 @@ module.exports = function (app) {
 
     setupPoiCache(options.cachingDurationMinutes)
 
-    registerAsNoteResourcesProvider(buildPoiTypesString(options))
+    registerAsNoteResourcesProvider(options)
   }
 
   plugin.stop = function () {
@@ -62,90 +62,210 @@ module.exports = function (app) {
         title: 'How long to cache data from Active Captain in minutes (longer = less data trafic; shorter = more up to date data)',
         default: 60
       },
-      includeMarinas: {
-        type: 'boolean',
-        title: 'Include marinas',
-        default: true
+      marinas: {
+        type: 'object',
+        title: 'Marinas',
+        properties: {
+          include: {
+            type: 'boolean',
+            title: 'Include marinas',
+            default: true
+          },
+          minZoomLevel: {
+            type: 'number',
+            description: 'Marinas will not be shown below this zoom level',
+            title: 'Minimum zoom level',
+            default: 10
+          }
+        }
       },
-      includeAnchorages: {
-        type: 'boolean',
-        title: 'Include anchorages',
-        default: true
+      anchorages: {
+        type: 'object',
+        title: 'Anchorages',
+        properties: {
+          include: {
+            type: 'boolean',
+            title: 'Include anchorages',
+            default: true
+          },
+          minZoomLevel: {
+            type: 'number',
+            description: 'Anchorages will not be shown below this zoom level',
+            title: 'Minimum zoom level',
+            default: 10
+          }
+        }
       },
-      includeHazards: {
-        type: 'boolean',
-        title: 'Include hazard',
-        default: true
+      hazards: {
+        type: 'object',
+        title: 'Hazards',
+        properties: {
+          include: {
+            type: 'boolean',
+            title: 'Include hazards',
+            default: true
+          },
+          minZoomLevel: {
+            type: 'number',
+            description: 'Hazards will not be shown below this zoom level',
+            title: 'Minimum zoom level',
+            default: 10
+          }
+        }
       },
-      includeBusinesses: {
-        type: 'boolean',
-        title: 'Include businesses',
-        default: true
+      businesses: {
+        type: 'object',
+        title: 'Businesses',
+        properties: {
+          include: {
+            type: 'boolean',
+            title: 'Include businesses',
+            default: true
+          },
+          minZoomLevel: {
+            type: 'number',
+            description: 'Businesses will not be shown below this zoom level',
+            title: 'Minimum zoom level',
+            default: 10
+          }
+        }
       },
-      includeBoatRamps: {
-        type: 'boolean',
-        title: 'Include boat ramps',
-        default: true
+      boatRamps: {
+        type: 'object',
+        title: 'Boat Ramps',
+        properties: {
+          include: {
+            type: 'boolean',
+            title: 'Include boat ramps',
+            default: true
+          },
+          minZoomLevel: {
+            type: 'number',
+            description: 'Boat ramps will not be shown below this zoom level',
+            title: 'Minimum zoom level',
+            default: 10
+          }
+        }
       },
-      includeBridges: {
-        type: 'boolean',
-        title: 'Include bridges',
-        default: true
+      bridges: {
+        type: 'object',
+        title: 'Bridges',
+        properties: {
+          include: {
+            type: 'boolean',
+            title: 'Include bridges',
+            default: true
+          },
+          minZoomLevel: {
+            type: 'number',
+            description: 'Bridges will not be shown below this zoom level',
+            title: 'Minimum zoom level',
+            default: 10
+          }
+        }
       },
-      includeDams: {
-        type: 'boolean',
-        title: 'Include dams',
-        default: true
+      dams: {
+        type: 'object',
+        title: 'Dams',
+        properties: {
+          include: {
+            type: 'boolean',
+            title: 'Include dams',
+            default: true
+          },
+          minZoomLevel: {
+            type: 'number',
+            description: 'Dams will not be shown below this zoom level',
+            title: 'Minimum zoom level',
+            default: 10
+          }
+        }
       },
-      includeFerries: {
-        type: 'boolean',
-        title: 'Include ferries',
-        default: true
+      ferries: {
+        type: 'object',
+        title: 'Ferries',
+        properties: {
+          include: {
+            type: 'boolean',
+            title: 'Include ferries',
+            default: true
+          },
+          minZoomLevel: {
+            type: 'number',
+            description: 'Ferries will not be shown below this zoom level',
+            title: 'Minimum zoom level',
+            default: 10
+          }
+        }
       },
-      includeInlets: {
-        type: 'boolean',
-        title: 'Include inlets',
-        default: true
+      inlets: {
+        type: 'object',
+        title: 'Inlets',
+        properties: {
+          include: {
+            type: 'boolean',
+            title: 'Include inlets',
+            default: true
+          },
+          minZoomLevel: {
+            type: 'number',
+            description: 'Inlets will not be shown below this zoom level',
+            title: 'Minimum zoom level',
+            default: 10
+          }
+        }
       },
-      includeLocks: {
-        type: 'boolean',
-        title: 'Include locks',
-        default: true
+      locks: {
+        type: 'object',
+        title: 'Locks',
+        properties: {
+          include: {
+            type: 'boolean',
+            title: 'Include locks',
+            default: true
+          },
+          minZoomLevel: {
+            type: 'number',
+            description: 'Locks will not be shown below this zoom level',
+            title: 'Minimum zoom level',
+            default: 10
+          }
+        }
       }
     }
   }
 
-  function buildPoiTypesString (options) {
+  function buildPoiTypesString (options, zoom) {
     const poiTypes = []
 
-    if (options.includeMarinas) {
+    if (options.marinas.include && (!zoom || zoom >= options.marinas.minZoomLevel)) {
       poiTypes.push('Marina')
     }
-    if (options.includeAnchorages) {
+    if (options.anchorages.include && (!zoom || zoom >= options.anchorages.minZoomLevel)) {
       poiTypes.push('Anchorage')
     }
-    if (options.includeHazards) {
+    if (options.hazards.include && (!zoom || zoom >= options.hazards.minZoomLevel)) {
       poiTypes.push('Hazard')
     }
-    if (options.includeBusinesses) {
+    if (options.businesses.include && (!zoom || zoom >= options.businesses.minZoomLevel)) {
       poiTypes.push('Business')
     }
-    if (options.includeBoatRamps) {
+    if (options.boatRamps.include && (!zoom || zoom >= options.boatRamps.minZoomLevel)) {
       poiTypes.push('BoatRamp')
     }
-    if (options.includeBridges) {
+    if (options.bridges.include && (!zoom || zoom >= options.bridges.minZoomLevel)) {
       poiTypes.push('Bridge')
     }
-    if (options.includeDams) {
+    if (options.dams.include && (!zoom || zoom >= options.dams.minZoomLevel)) {
       poiTypes.push('Dam')
     }
-    if (options.includeFerries) {
+    if (options.ferries.include && (!zoom || zoom >= options.ferries.minZoomLevel)) {
       poiTypes.push('Ferry')
     }
-    if (options.includeInlets) {
+    if (options.inlets.include && (!zoom || zoom >= options.inlets.minZoomLevel)) {
       poiTypes.push('Inlet')
     }
-    if (options.includeLocks) {
+    if (options.locks.include && (!zoom || zoom >= options.locks.minZoomLevel)) {
       poiTypes.push('Lock')
     }
 
@@ -154,7 +274,7 @@ module.exports = function (app) {
     return poiTypes.join()
   }
 
-  function registerAsNoteResourcesProvider (poiTypes) {
+  function registerAsNoteResourcesProvider (options) {
     try {
       app.registerResourceProvider({
         type: 'notes',
@@ -168,7 +288,7 @@ module.exports = function (app) {
               const promises = []
 
               for (const struct of sourceConfig.values()) {
-                const promise = struct.listMethod(app, bbox[0], bbox[1], bbox[2], bbox[3], poiTypes)
+                const promise = struct.listMethod(app, bbox[0], bbox[1], bbox[2], bbox[3], buildPoiTypesString(options, query.zoom))
                   .then(entities => {
                     return entities.map(entity => {
                       return {
