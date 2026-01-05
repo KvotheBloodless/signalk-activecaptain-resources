@@ -23,12 +23,14 @@
   */
 
 const client = require('./activecaptain_client')
-const handlebarsUtilities = require('./handlebars_utilities')
 const positionUtils = require('./position_utilities')
 const loadingCache = require('@inventivetalent/loading-cache')
 const time = require('@inventivetalent/time')
 
 module.exports = function (app) {
+  
+  const handlebarsUtilities = require('./handlebars_utilities')(app)
+
   const plugin = {
     id: 'signalk-activecaptain-resources',
     name: 'Garmin Active Captain Resources',
