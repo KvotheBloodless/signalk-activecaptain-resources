@@ -30,142 +30,145 @@ const moment = require('moment')
 const EMPTY = ''
 const UNKNOWN = 'Unknown'
 
-const partialsDir = './node_modules/signalk-activecaptain-resources/plugin/partials/'
+module.exports = function (app) {
+  const basePath = app.config.configPath.replace(/\/config$/, '')
 
-handlebars.registerPartial('header', fs.readFileSync(`${partialsDir}/header.hbsp`, 'utf-8'))
-handlebars.registerPartial('footer', fs.readFileSync(`${partialsDir}/footer.hbsp`, 'utf-8'))
-handlebars.registerPartial('business', fs.readFileSync(`${partialsDir}/business.hbsp`, 'utf-8'))
-handlebars.registerPartial('dockage', fs.readFileSync(`${partialsDir}/dockage.hbsp`, 'utf-8'))
-handlebars.registerPartial('fuel', fs.readFileSync(`${partialsDir}/fuel.hbsp`, 'utf-8'))
-handlebars.registerPartial('amenities', fs.readFileSync(`${partialsDir}/amenities.hbsp`, 'utf-8'))
-handlebars.registerPartial('contact', fs.readFileSync(`${partialsDir}/contact.hbsp`, 'utf-8'))
-handlebars.registerPartial('review', fs.readFileSync(`${partialsDir}/review.hbsp`, 'utf-8'))
+  const partialsDir = `${basePath}/node_modules/signalk-activecaptain-resources/plugin/partials`
+  const templatesDir = `${basePath}/node_modules/signalk-activecaptain-resources/plugin/templates`
 
-const templatesDir = './node_modules/signalk-activecaptain-resources/plugin/templates/'
+  // Load partials
+  handlebars.registerPartial('header', fs.readFileSync(`${partialsDir}/header.hbsp`, 'utf-8'))
+  handlebars.registerPartial('footer', fs.readFileSync(`${partialsDir}/footer.hbsp`, 'utf-8'))
+  handlebars.registerPartial('business', fs.readFileSync(`${partialsDir}/business.hbsp`, 'utf-8'))
+  handlebars.registerPartial('dockage', fs.readFileSync(`${partialsDir}/dockage.hbsp`, 'utf-8'))
+  handlebars.registerPartial('fuel', fs.readFileSync(`${partialsDir}/fuel.hbsp`, 'utf-8'))
+  handlebars.registerPartial('amenities', fs.readFileSync(`${partialsDir}/amenities.hbsp`, 'utf-8'))
+  handlebars.registerPartial('contact', fs.readFileSync(`${partialsDir}/contact.hbsp`, 'utf-8'))
+  handlebars.registerPartial('review', fs.readFileSync(`${partialsDir}/review.hbsp`, 'utf-8'))
 
-const pointOfInterestTemplate = handlebars.compile(fs.readFileSync(`${templatesDir}/point_of_interest.hbs`, 'utf-8'))
+  // Main template
+  const pointOfInterestTemplate = handlebars.compile(
+    fs.readFileSync(`${templatesDir}/point_of_interest.hbs`, 'utf-8')
+  )
 
-module.exports = {
-  helpers: function () {
-    helpersForHandlebars.comparison()
-    helpersForHandlebars.array()
+  // Helper to safely check array length
+  const safeLength = x => Array.isArray(x) ? x.length : 0
 
-    handlebars.registerHelper('fromNow', function (context, _) {
-      return moment(new Date(context)).fromNow()
-    })
+  return {
+    helpers: function () {
+      helpersForHandlebars.comparison()
+      helpersForHandlebars.array()
 
-    handlebars.registerHelper('hasFuel', function (options) {
-      if (this.data.fuel) {
-        if (this.data.fuel.diesel !== UNKNOWN ||
-              this.data.fuel.ethanolFree !== UNKNOWN ||
-              this.data.fuel.gas !== UNKNOWN ||
-              this.data.fuel.propane !== UNKNOWN ||
-              this.data.fuel.electric !== UNKNOWN ||
-              (this.data.fuel.notes && this.data.fuel.notes.length > 0)) {
-          return options.fn(this)
+      handlebars.registerHelper('fromNow', function (context) {
+        return moment(new Date(context)).fromNow()
+      })
+
+      handlebars.registerHelper('hasFuel', function (options) {
+        const fuel = this.data.fuel
+        if (fuel) {
+          const notesLen = safeLength(fuel.notes)
+          if (
+            fuel.diesel !== UNKNOWN ||
+            fuel.ethanolFree !== UNKNOWN ||
+            fuel.gas !== UNKNOWN ||
+            fuel.propane !== UNKNOWN ||
+            fuel.electric !== UNKNOWN ||
+            notesLen > 0
+          ) {
+            return options.fn(this)
+          }
         }
-      }
-      return options.inverse(this)
-    })
+        return options.inverse(this)
+      })
 
-    handlebars.registerHelper('hasDockage', function (options) {
-      if (this.data.dockage) {
-        if (this.data.dockage.liveaboard !== UNKNOWN ||
-            this.data.dockage.secureAccess !== UNKNOWN ||
-            this.data.dockage.securityPatrol !== UNKNOWN ||
-            this.data.dockage.notes.length > 0) {
-          return options.fn(this)
+      handlebars.registerHelper('hasDockage', function (options) {
+        const dock = this.data.dockage
+        if (dock) {
+          const notesLen = safeLength(dock.notes)
+          if (
+            dock.liveaboard !== UNKNOWN ||
+            dock.secureAccess !== UNKNOWN ||
+            dock.securityPatrol !== UNKNOWN ||
+            notesLen > 0
+          ) {
+            return options.fn(this)
+          }
         }
-      }
-      return options.inverse(this)
-    })
+        return options.inverse(this)
+      })
 
-    handlebars.registerHelper('hasContact', function (options) {
-      if (this.data.contact) {
-        if (this.data.contact.vhfChannel !== EMPTY ||
-            this.data.contact.phone !== EMPTY ||
-            this.data.contact.afterHourContact !== EMPTY ||
-            this.data.contact.email !== EMPTY ||
-            this.data.contact.website !== EMPTY) {
-          return options.fn(this)
+      handlebars.registerHelper('hasContact', function (options) {
+        const c = this.data.contact
+        if (c) {
+          if (
+            c.vhfChannel !== EMPTY ||
+            c.phone !== EMPTY ||
+            c.afterHourContact !== EMPTY ||
+            c.email !== EMPTY ||
+            c.website !== EMPTY
+          ) {
+            return options.fn(this)
+          }
         }
-      }
-      return options.inverse(this)
-    })
+        return options.inverse(this)
+      })
 
-    handlebars.registerHelper('hasAmenities', function (options) {
-      if (this.data.amenity) {
-        if (this.data.amenity.bar !== UNKNOWN ||
-          this.data.amenity.boatRamp !== UNKNOWN ||
-          this.data.amenity.cellReception !== UNKNOWN ||
-          this.data.amenity.courtesyCar !== UNKNOWN ||
-          this.data.amenity.laundry !== UNKNOWN ||
-          this.data.amenity.lodging !== UNKNOWN ||
-          this.data.amenity.pets !== UNKNOWN ||
-          this.data.amenity.restaurant !== UNKNOWN ||
-          this.data.amenity.restroom !== UNKNOWN ||
-          this.data.amenity.shower !== UNKNOWN ||
-          this.data.amenity.transportation !== UNKNOWN ||
-          this.data.amenity.trash !== UNKNOWN ||
-          this.data.amenity.water !== UNKNOWN ||
-          this.data.amenity.wifi !== UNKNOWN) {
-          return options.fn(this)
+      handlebars.registerHelper('hasAmenities', function (options) {
+        const a = this.data.amenity
+        if (a) {
+          if (
+            a.bar !== UNKNOWN ||
+            a.boatRamp !== UNKNOWN ||
+            a.cellReception !== UNKNOWN ||
+            a.courtesyCar !== UNKNOWN ||
+            a.laundry !== UNKNOWN ||
+            a.lodging !== UNKNOWN ||
+            a.pets !== UNKNOWN ||
+            a.restaurant !== UNKNOWN ||
+            a.restroom !== UNKNOWN ||
+            a.shower !== UNKNOWN ||
+            a.transportation !== UNKNOWN ||
+            a.trash !== UNKNOWN ||
+            a.water !== UNKNOWN ||
+            a.wifi !== UNKNOWN
+          ) {
+            return options.fn(this)
+          }
         }
-      }
-      return options.inverse(this)
-    })
+        return options.inverse(this)
+      })
 
-    handlebars.registerHelper('hasBusiness', function (options) {
-      if (this.data.business) {
-        if (this.data.business.cash !== UNKNOWN ||
-            this.data.business.check !== UNKNOWN ||
-            this.data.business.credit !== UNKNOWN ||
-            this.data.business.public !== UNKNOWN ||
-            this.data.business.seasonal !== UNKNOWN ||
-            this.data.business.notes.length > 0) {
-          return options.fn(this)
+      handlebars.registerHelper('hasBusiness', function (options) {
+        const b = this.data.business
+        if (b) {
+          const notesLen = safeLength(b.notes)
+          if (
+            b.cash !== UNKNOWN ||
+            b.check !== UNKNOWN ||
+            b.credit !== UNKNOWN ||
+            b.public !== UNKNOWN ||
+            b.seasonal !== UNKNOWN ||
+            notesLen > 0
+          ) {
+            return options.fn(this)
+          }
         }
-      }
-      return options.inverse(this)
-    })
-  },
-  anchorage: function (data) {
-    return pointOfInterestTemplate({ data })
-  },
-  hazard: function (data) {
-    return pointOfInterestTemplate({ data })
-  },
-  marina: function (data) {
-    return pointOfInterestTemplate({ data })
-  },
-  localKnowledge: function (data) {
-    return pointOfInterestTemplate({ data })
-  },
-  navigational: function (data) {
-    return pointOfInterestTemplate({ data })
-  },
-  boatRamp: function (data) {
-    return pointOfInterestTemplate({ data })
-  },
-  business: function (data) {
-    return pointOfInterestTemplate({ data })
-  },
-  inlet: function (data) {
-    return pointOfInterestTemplate({ data })
-  },
-  lock: function (data) {
-    return pointOfInterestTemplate({ data })
-  },
-  dam: function (data) {
-    return pointOfInterestTemplate({ data })
-  },
-  ferry: function (data) {
-    return pointOfInterestTemplate({ data })
-  },
-  airport: function (data) {
-    return pointOfInterestTemplate({ data })
-  },
-  bridge: function (data) {
-    return pointOfInterestTemplate({ data })
+        return options.inverse(this)
+      })
+    },
+
+    anchorage: data => pointOfInterestTemplate({ data }),
+    hazard: data => pointOfInterestTemplate({ data }),
+    marina: data => pointOfInterestTemplate({ data }),
+    localKnowledge: data => pointOfInterestTemplate({ data }),
+    navigational: data => pointOfInterestTemplate({ data }),
+    boatRamp: data => pointOfInterestTemplate({ data }),
+    business: data => pointOfInterestTemplate({ data }),
+    inlet: data => pointOfInterestTemplate({ data }),
+    lock: data => pointOfInterestTemplate({ data }),
+    dam: data => pointOfInterestTemplate({ data }),
+    ferry: data => pointOfInterestTemplate({ data }),
+    airport: data => pointOfInterestTemplate({ data }),
+    bridge: data => pointOfInterestTemplate({ data })
   }
 }
